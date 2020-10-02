@@ -1,2 +1,2 @@
 # Readability-Score
-Java programm to handle texts.
+Java program to handle texts.
