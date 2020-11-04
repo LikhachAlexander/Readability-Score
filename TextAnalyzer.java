@@ -13,11 +13,6 @@ public class TextAnalyzer {
         this.text = new Text(text);
     }
 
-    public double calculateARI() {
-        return 4.71 * text.getNumberOfCharacters() / text.getNumberOfWords() +
-                0.5 * text.getNumberOfWords() / text.getNumberOfSentences() - 21.43;
-    }
-
     public void printText() {
         System.out.println("The text is:");
         System.out.println(text.getText());
@@ -36,47 +31,12 @@ public class TextAnalyzer {
         System.out.println("Characters: " + text.getNumberOfCharacters());
     }
 
-    public void printARIScore() {
-        System.out.print("The score is: ");
-        System.out.print(String.format(Locale.US, "%.2f\n", calculateARI()));
+    public void printSyllables() {
+        System.out.println("Syllables: " + text.getNumberOfSyllables());
     }
 
-    public static String getARIHint(int score) {
-        switch (score) {
-            case 1:
-                return "This text should be understood by 5-6 year olds.";
-            case 2:
-                return "This text should be understood by 6-7 year olds.";
-            case 3:
-                return "This text should be understood by 7-9 year olds.";
-            case 4:
-                return "This text should be understood by 9-10 year olds.";
-            case 5:
-                return "This text should be understood by 10-11 year olds.";
-            case 6:
-                return "This text should be understood by 11-12 year olds.";
-            case 7:
-                return "This text should be understood by 12-13 year olds.";
-            case 8:
-                return "This text should be understood by 13-14 year olds.";
-            case 9:
-                return "This text should be understood by 14-15 year olds.";
-            case 10:
-                return "This text should be understood by 15-16 year olds.";
-            case 11:
-                return "This text should be understood by 16-17 year olds.";
-            case 12:
-                return "This text should be understood by 17-18 year olds.";
-            case 13:
-                return "This text should be understood by 18-24 year olds.";
-            default:
-                return "This text should be understood by 24+ year olds.";
-        }
-    }
-
-    public void printAuditory() {
-        int score = (int) Math.ceil(calculateARI());
-        System.out.println(getARIHint(score));
+    public void printPolysyllables() {
+        System.out.println("Polysyllables: " + text.getNumberOfPolysyllables());
     }
 
     public void printInfo() {
@@ -84,7 +44,45 @@ public class TextAnalyzer {
         printWords();
         printSentences();
         printCharacters();
-        printARIScore();
-        printAuditory();
+        printSyllables();
+        printPolysyllables();
+    }
+
+    public void printScore(String option) {
+        double ARIScore = ReadabilityTests.AutomatedReadabilityIndex(text.getNumberOfCharacters(), text.getNumberOfWords(), text.getNumberOfSentences());
+        int ARIAge = ReadabilityTests.getAge(ARIScore);
+        double FKRTScore = ReadabilityTests.FleschKincaidReadabilityTest(text.getNumberOfWords(), text.getNumberOfSentences(), text.getNumberOfSyllables());
+        int FKRTAge = ReadabilityTests.getAge(FKRTScore);
+        double SMOGScore = ReadabilityTests.SMOGIndex(text.getNumberOfPolysyllables(), text.getNumberOfSentences());
+        int SMOGAge = ReadabilityTests.getAge(SMOGScore);
+        double CLIScore = ReadabilityTests.ColemanLiauIndex(text.getNumberOfCharacters(), text.getNumberOfSentences(), text.getNumberOfWords());
+        int CLIAge = ReadabilityTests.getAge(CLIScore);
+        System.out.println();
+        if (option.equals("ARI") || option.equals("all")) {
+            System.out.print("Automated Readability Index: ");
+            System.out.printf(Locale.US, "%.2f ", ARIScore);
+            System.out.print("(about " + ARIAge + " year olds).\n");
+        }
+        if (option.equals("FK") || option.equals("all")) {
+            System.out.print("Flesch–Kincaid readability tests: ");
+            System.out.printf(Locale.US, "%.2f ", FKRTScore);
+            System.out.print("(about " + FKRTAge + " year olds).\n");
+        }
+        if (option.equals("SMOG") || option.equals("all")) {
+            System.out.print("Simple Measure of Gobbledygook: ");
+            System.out.printf(Locale.US, "%.2f ", SMOGScore);
+            System.out.print("(about " + SMOGAge + " year olds).\n");
+        }
+        if (option.equals("CL") || option.equals("all")) {
+            System.out.print("Coleman–Liau index: ");
+            System.out.printf(Locale.US, "%.2f ", CLIScore);
+            System.out.print("(about " + CLIAge + " year olds).\n");
+        }
+        if (option.equals("all")) {
+            double average = (ARIAge + FKRTAge + SMOGAge + CLIAge) / 4.0;
+            System.out.print("This text should be understood in average by ");
+            System.out.printf(Locale.US, "%.2f ", average);
+            System.out.println(" year olds.");
+        }
     }
 }
