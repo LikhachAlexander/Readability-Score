@@ -47,4 +47,20 @@ public class Text {
         return sentences.length;
     }
 
+    public int getNumberOfSyllables() {
+        int syllables = 0;
+        for (Sentence sentence: sentences) {
+            syllables += sentence.getNumberOfSyllables();
+        }
+        return syllables;
+    }
+
+    public int getNumberOfPolysyllables() {
+        int polysyllables = 0;
+        for (Sentence sentence: sentences) {
+            polysyllables += sentence.getNumberOfPolysyllables();
+        }
+        return polysyllables;
+    }
+
 }

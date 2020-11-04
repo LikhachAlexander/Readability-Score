@@ -26,6 +26,24 @@ public class Sentence {
         return total;
     }
 
+    public int getNumberOfSyllables() {
+        int syllables = 0;
+        for (Word word: words) {
+            syllables += word.getNumberOfSyllables();
+        }
+        return syllables;
+    }
+
+    public int getNumberOfPolysyllables() {
+        int polysyllables = 0;
+        for (Word word: words) {
+            if (word.isPolysyllable()) {
+                polysyllables++;
+            }
+        }
+        return polysyllables;
+    }
+
     public String getSentenceText() {
         StringBuilder text = new StringBuilder();
         for (Word word:
